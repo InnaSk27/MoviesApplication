@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MoviesDomain.Entities;
 using MoviesDomain.Interfaces;
 
-namespace MoviesInfrastructure.Repository;
+namespace MoviesInfrastructure.Repositories;
 
 public class MoviesRepository: IMoviesRepository
 {
