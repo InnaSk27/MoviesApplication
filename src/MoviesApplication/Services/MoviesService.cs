@@ -1,10 +1,11 @@
 using MoviesDomain.Interfaces;
 using MoviesDomain.Dtos;
 using MoviesDomain.Entities;
+using MoviesDomain.Dtos.Enums;
 
 namespace MoviesApplication.Services;
 
-public class MoviesService : IMoviesService
+public class MoviesService: IMoviesService
 {
     public IMoviesRepository _moviesRepository;
 
@@ -25,6 +26,7 @@ public class MoviesService : IMoviesService
         {
             return MapToMovieDto(dbMovie);
         }
+
         return null;
     }
     
@@ -39,23 +41,23 @@ public class MoviesService : IMoviesService
         return null;
     }
 
-    private MovieDto MapToMovieDto(Movie entityMovie)
+    private static MovieDto MapToMovieDto(Movie entityMovie)
     {
         return new MovieDto()
         {
-            Genre = entityMovie.Genre,
+            Genre = (MoviesGenre)entityMovie.Genre,
             Id = entityMovie.Id,
             Name = entityMovie.Name,
             TicketPrice = entityMovie.TicketPrice
         };
     }
 
-    private Movie MapToMovieEntity(MovieDto dtoMovie)
+    private static Movie MapToMovieEntity(MovieDto dtoMovie)
     {
         return new Movie()
         {
             Id = Guid.NewGuid(),
-            Genre = dtoMovie.Genre,
+            Genre = (int)dtoMovie.Genre,
             Name = dtoMovie.Name,
             TicketPrice = dtoMovie.TicketPrice
         };

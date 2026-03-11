@@ -3,6 +3,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MoviesDomain.Dtos;
 using MoviesDomain.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MoviesApi.Controllers;
 
@@ -18,6 +21,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet(Name = "GetAllMovies")]
+    // [Authorize]
     public async Task<IEnumerable<MovieDto>> Get()
     {
         return await _moviesService.GetAllMoviesAsync();
@@ -35,6 +39,18 @@ public class MoviesController : ControllerBase
         return Ok(movie);
     }
 
+    /// <summary>
+    /// Creates a Movie.
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///        "name": "Die Hard",
+    ///        "genre": "Action",
+    ///        "ticketPrice": 20
+    ///     }
+    /// </remarks>
     [HttpPost]
     public async Task<ActionResult<MovieDto>> AddMovie(MovieDto movieToAdd)
     {
