@@ -56,7 +56,7 @@ public class MoviesService: IMoviesService
     {
         return new Movie()
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Empty != dtoMovie.Id ? dtoMovie.Id : Guid.NewGuid(),
             Genre = (int)dtoMovie.Genre,
             Name = dtoMovie.Name,
             TicketPrice = dtoMovie.TicketPrice

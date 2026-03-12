@@ -47,13 +47,23 @@ builder.Services.AddDbContext<MoviesDbContext>(options =>
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
+    options.SwaggerDoc("v1", new OpenApiInfo 
     { 
         Title = "Movies API", 
         Version = "v1",
         Description = "API for managing movies"
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+       In = ParameterLocation.Header,
+       Description = "Please enter a valid Token",
+       Name = "Authorization",
+       Type = SecuritySchemeType.Http,
+       BearerFormat = "JWT",
+       Scheme = "Bearer" 
     });
     
     // Only include XML comments if the file exists
@@ -62,7 +72,7 @@ builder.Services.AddSwaggerGen(c =>
     
     if (File.Exists(xmlPath))
     {
-        c.IncludeXmlComments(xmlPath);
+        options.IncludeXmlComments(xmlPath);
     }
 });
 

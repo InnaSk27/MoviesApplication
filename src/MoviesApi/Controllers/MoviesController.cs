@@ -21,7 +21,7 @@ public class MoviesController : ControllerBase
     }
 
     [HttpGet(Name = "GetAllMovies")]
-    // [Authorize]
+    [Authorize]
     public async Task<IEnumerable<MovieDto>> Get()
     {
         return await _moviesService.GetAllMoviesAsync();
@@ -52,6 +52,7 @@ public class MoviesController : ControllerBase
     ///     }
     /// </remarks>
     [HttpPost]
+    // [Authorize]
     public async Task<ActionResult<MovieDto>> AddMovie(MovieDto movieToAdd)
     {
         var movie = await _moviesService.AddMovieAsync(movieToAdd);
