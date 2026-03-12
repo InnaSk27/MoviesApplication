@@ -1,4 +1,4 @@
-namespace MoviesApplication.JWT;
+namespace MoviesDomain.JWT;
 
 public class JwtSettings
 {
