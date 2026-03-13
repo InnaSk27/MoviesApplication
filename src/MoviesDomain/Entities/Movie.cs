@@ -6,4 +6,7 @@ public class Movie
     public string? Name {get;set;}
     public int Genre {get;set;}
     public int TicketPrice {get;set;}
+    public Studio? Studio{get;set;}
+
+    public virtual ICollection<MovieActor>? MovieActors {get;set;}
 }

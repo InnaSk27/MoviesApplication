@@ -12,4 +12,29 @@ public class MoviesDbContext: DbContext
     }    
     public DbSet<Movie> Movies {get;set;}
     public DbSet<User> Users {get;set;}
+    public DbSet<Actor> Actors {get;set;}
+    public DbSet<Studio> Studio {get;set;}
+    public DbSet<MovieActor> MovieActors {get;set;}
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Studio>()
+            .HasMany(a => a.Movies)
+            .WithOne(p => p.Studio)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<MovieActor>()
+            .HasKey(ma => new { ma.MovieId, ma.ActorId});
+
+        modelBuilder.Entity<MovieActor>()
+            .HasOne(a => a.Movie)
+            .WithMany(m => m.MovieActors)
+            .HasForeignKey(ma => ma.MovieId);
+
+        modelBuilder.Entity<MovieActor>()
+            .HasOne(a => a.Actor)
+            .WithMany(m => m.MovieActors)
+            .HasForeignKey(ma => ma.ActorId);
+
+    }
 }

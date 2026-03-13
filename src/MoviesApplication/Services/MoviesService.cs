@@ -41,7 +41,7 @@ public class MoviesService: IMoviesService
         return null;
     }
 
-    private static MovieDto MapToMovieDto(Movie entityMovie)
+    public MovieDto MapToMovieDto(Movie entityMovie)
     {
         return new MovieDto()
         {
