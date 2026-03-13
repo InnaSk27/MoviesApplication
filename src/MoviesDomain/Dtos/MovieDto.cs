@@ -7,4 +7,6 @@ public class MovieDto
     public string? Name {get;set;}
     public MoviesGenre Genre {get;set;}
     public int TicketPrice {get;set;}
+
+    public StudioDto? Studio {get;set;}
 }

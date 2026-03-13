@@ -17,20 +17,22 @@ public class StudiosRepository: IStudiosRepository
     {
         return await _moviesDbContext.Studio.ToListAsync();
     }
-    // public async Task<Movie?> GetMovieByIdAsync(Guid movieId)
-    // {
-    //     return await _moviesDbContext.Movies.FindAsync(movieId);
-    // }
-    // public async Task<bool> AddMovieAsync(Movie movie)
-    // {
-    //     try
-    //     {
-    //         _moviesDbContext.Movies.Add(movie);
-    //         return await _moviesDbContext.SaveChangesAsync() > 0;
-    //     }
-    //     catch (Exception)
-    //     {
-    //         return false;
-    //     }
-    // }
+
+    public async Task<bool> ValidateStudioAsync(string studioName)
+    {
+        return await _moviesDbContext.Studio.AnyAsync(st => st.Name == studioName);
+    }
+    
+    public async Task<bool> AddStudioAsync(Studio studio)
+    {
+        try
+        {
+            _moviesDbContext.Studio.Add(studio);
+            return await _moviesDbContext.SaveChangesAsync() > 0;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
 }

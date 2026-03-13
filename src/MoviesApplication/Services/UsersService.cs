@@ -1,8 +1,6 @@
-using System.Security.Permissions;
 using MoviesDomain.Entities;
 using MoviesDomain.Interfaces;
 using Microsoft.AspNetCore.Identity;
-using MoviesInfrastructure;
 using MoviesDomain.Dtos;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
@@ -40,7 +38,7 @@ public class UsersService : IUsersService
 
     public async Task<bool> RegisterUserAsync(UserDto userDto)
     {
-        if (await _usersRepository.UserExistsAsync(userDto.Name))
+        if (await _usersRepository.UserExistsAsync(userDto.Name ?? ""))
         {
             return false;
         }
@@ -55,16 +53,6 @@ public class UsersService : IUsersService
         };
 
         return await _usersRepository.CreateUserAsync(user);
-    }
-
-    public async Task<UserDto> GetUserByNameAsync(string username)
-    {
-        var user = await _usersRepository.GetUserAsync(username);
-        return new UserDto
-        {
-            Id = user.Id,
-            Name = user.Name
-        };
     }
 
     public string GenerateToken()

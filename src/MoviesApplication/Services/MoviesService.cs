@@ -52,14 +52,25 @@ public class MoviesService: IMoviesService
         };
     }
 
-    private static Movie MapToMovieEntity(MovieDto dtoMovie)
+    public Movie MapToMovieEntity(MovieDto dtoMovie)
     {
-        return new Movie()
+        var movie = new Movie()
         {
             Id = Guid.Empty != dtoMovie.Id ? dtoMovie.Id : Guid.NewGuid(),
             Genre = (int)dtoMovie.Genre,
             Name = dtoMovie.Name,
             TicketPrice = dtoMovie.TicketPrice
         };
+
+        if(dtoMovie.Studio != null)
+        {
+            movie.Studio = new Studio
+            {
+                Id = Guid.Empty != dtoMovie.Studio.Id ? dtoMovie.Studio.Id : Guid.NewGuid(),
+                Name = dtoMovie.Studio.Name
+            };
+        }
+        
+        return movie;
     }
 }

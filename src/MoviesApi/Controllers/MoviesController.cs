@@ -28,6 +28,7 @@ public class MoviesController : ControllerBase
     }
     
     [HttpGet("{movieId}")]
+    [Authorize]
     public async Task<ActionResult<MovieDto>> Get(Guid movieId)
     {
         var movie = await _moviesService.GetMovieByIdAsync(movieId);

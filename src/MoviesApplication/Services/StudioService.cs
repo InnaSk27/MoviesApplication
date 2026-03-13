@@ -1,8 +1,6 @@
 using MoviesDomain.Interfaces;
 using MoviesDomain.Dtos;
 using MoviesDomain.Entities;
-using MoviesDomain.Dtos.Enums;
-using Org.BouncyCastle.Math.EC.Rfc7748;
 
 namespace MoviesApplication.Services;
 
@@ -21,24 +19,40 @@ public class StudioService: IStudiosService
         var dbStudio = await _studiosRepository.GetAllStudiosAsync();
         return dbStudio.Select(m => MapToStudioDto(m)); 
     }
+
+    public async Task<bool> CreateStudioAsync(StudioDto studioDto)
+    {
+        if(!await _studiosRepository.ValidateStudioAsync(studioDto.Name ?? ""))
+        {
+            return await _studiosRepository.AddStudioAsync(MapToStudioEntity(studioDto));
+        }
+        return false;
+    }
+
     private StudioDto MapToStudioDto(Studio entityStudio)
     {
         var moviesInStudio = entityStudio?.Movies?.Select(x => _moviesService.MapToMovieDto(x));
         return new StudioDto()
         {
-            Name = entityStudio.Name,
-            Movies = moviesInStudio.ToList()
+            Name = entityStudio?.Name,
+            Movies = moviesInStudio?.ToList()
         };
     }
 
-    // private static Movie MapToMovieEntity(MovieDto dtoMovie)
-    // {
-    //     return new Movie()
-    //     {
-    //         Id = Guid.Empty != dtoMovie.Id ? dtoMovie.Id : Guid.NewGuid(),
-    //         Genre = (int)dtoMovie.Genre,
-    //         Name = dtoMovie.Name,
-    //         TicketPrice = dtoMovie.TicketPrice
-    //     };
-    // }
+    private Studio MapToStudioEntity(StudioDto studioDto)
+    {
+        var moviesToAdd = new List<Movie>();
+
+        if(studioDto.Movies != null && studioDto.Movies.Any())
+        {
+            moviesToAdd = studioDto.Movies.Select(x => _moviesService.MapToMovieEntity(x)).ToList();
+        }
+        
+        return new Studio
+        {
+            Id = Guid.Empty != studioDto.Id ? studioDto.Id : Guid.NewGuid(),
+            Name = studioDto.Name,
+            Movies = moviesToAdd
+        };
+    }
 }

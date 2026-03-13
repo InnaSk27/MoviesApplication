@@ -18,6 +18,14 @@ public class MoviesDbContext: DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Movie>()
+            .HasIndex(m => m.Name)
+            .IsUnique();
+
+        modelBuilder.Entity<Studio>()
+            .HasIndex(m => m.Name)
+            .IsUnique();
+
         modelBuilder.Entity<Studio>()
             .HasMany(a => a.Movies)
             .WithOne(p => p.Studio)

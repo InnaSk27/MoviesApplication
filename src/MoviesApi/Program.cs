@@ -33,6 +33,8 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
             .SingleInstance();
 
         container.RegisterType<UsersService>().As<IUsersService>().SingleInstance();
+        container.RegisterType<StudioService>().As<IStudiosService>().SingleInstance();
+        container.RegisterType<StudiosRepository>().As<IStudiosRepository>().SingleInstance();
         container.RegisterType<UsersRepository>().As<IUsersRepository>().SingleInstance();
     });
 

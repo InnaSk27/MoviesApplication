@@ -24,10 +24,8 @@ public class UsersController : ControllerBase
     {
         if(request != null)
         {
-            var username = request.Name;
-            if(await _userService.ValidateUserAsync(username, request.Password))
+            if(await _userService.ValidateUserAsync(request.Name ?? "", request.Password ?? ""))
             {
-                var user = await _userService.GetUserByNameAsync(username);
                 var token = _userService.GenerateToken();
                 return Ok(new {Token = token});
             }

@@ -5,6 +5,8 @@ namespace MoviesDomain.Interfaces;
 public interface IStudiosRepository
 {
     Task<IEnumerable<Studio>> GetAllStudiosAsync();
+    Task<bool> ValidateStudioAsync(string studioName);
+    Task<bool> AddStudioAsync(Studio studio);
     // Task<MovieDto?> GetMovieByIdAsync(Guid movieId);
     // Task<MovieDto?> AddMovieAsync(MovieDto movieId);
     

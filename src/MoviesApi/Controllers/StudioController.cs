@@ -26,43 +26,20 @@ public class StudioController : ControllerBase
     {
         return await _studiosService.GetAllStudiosAsync();
     }
-    
-    // [HttpGet("{movieId}")]
-    // public async Task<ActionResult<MovieDto>> Get(Guid movieId)
-    // {
-    //     var movie = await _moviesService.GetMovieByIdAsync(movieId);
-    //     if(movie == null)
-    //     {
-    //         return NotFound($"Record with id {movieId} was not found.");
-    //     }
-
-    //     return Ok(movie);
-    // }
 
     /// <summary>
-    /// Creates a Movie.
+    /// Creates a Studio.
     /// </summary>
-    /// <remarks>
-    /// Sample request:
-    ///
-    ///     {
-    ///        "name": "Die Hard",
-    ///        "genre": "Action",
-    ///        "ticketPrice": 20
-    ///     }
-    /// </remarks>
-    // [HttpPost]
-    // [Authorize]
-    // public async Task<ActionResult<MovieDto>> AddMovie(MovieDto movieToAdd)
-    // {
-    //     var movie = await _moviesService.AddMovieAsync(movieToAdd);
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> AddStudio(StudioDto studioToAdd)
+    {
+        if(!await _studiosService.CreateStudioAsync(studioToAdd))
+        {
+            return NotFound();
+        }
 
-    //     if(movie == null)
-    //     {
-    //         return NotFound();
-    //     }
-
-    //     return Ok(movie);
-    // }
+        return Ok();
+    }
 
 }
