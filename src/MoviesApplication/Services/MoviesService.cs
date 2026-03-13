@@ -8,10 +8,12 @@ namespace MoviesApplication.Services;
 public class MoviesService: IMoviesService
 {
     public IMoviesRepository _moviesRepository;
+    public IStudiosRepository _studiosRepository;
 
-    public MoviesService(IMoviesRepository moviesRepository)
+    public MoviesService(IMoviesRepository moviesRepository, IStudiosRepository studiosRepository)
     {
         _moviesRepository = moviesRepository;
+        _studiosRepository = studiosRepository;
     }
     public async Task<IEnumerable<MovieDto>> GetAllMoviesAsync()
     {
@@ -30,15 +32,16 @@ public class MoviesService: IMoviesService
         return null;
     }
     
-    public async Task<MovieDto?> AddMovieAsync(MovieDto movieDto)
+    public async Task<bool> AddMovieAsync(MovieDto movieDto)
     {
         var dbMovie = MapToMovieEntity(movieDto);
-        if(await _moviesRepository.AddMovieAsync(dbMovie))
+        
+        if(movieDto.StudioId != Guid.Empty)
         {
-            return await GetMovieByIdAsync(dbMovie.Id);
+            dbMovie.Studio = await _studiosRepository.GetStudioByIdAsync(movieDto.StudioId);
         }
 
-        return null;
+        return await _moviesRepository.AddMovieAsync(dbMovie);
     }
 
     public MovieDto MapToMovieDto(Movie entityMovie)
@@ -54,23 +57,12 @@ public class MoviesService: IMoviesService
 
     public Movie MapToMovieEntity(MovieDto dtoMovie)
     {
-        var movie = new Movie()
+        return new Movie()
         {
             Id = Guid.Empty != dtoMovie.Id ? dtoMovie.Id : Guid.NewGuid(),
             Genre = (int)dtoMovie.Genre,
             Name = dtoMovie.Name,
             TicketPrice = dtoMovie.TicketPrice
         };
-
-        if(dtoMovie.Studio != null)
-        {
-            movie.Studio = new Studio
-            {
-                Id = Guid.Empty != dtoMovie.Studio.Id ? dtoMovie.Studio.Id : Guid.NewGuid(),
-                Name = dtoMovie.Studio.Name
-            };
-        }
-        
-        return movie;
     }
 }

@@ -34,7 +34,7 @@ public class StudioController : ControllerBase
     [Authorize]
     public async Task<IActionResult> AddStudio(StudioDto studioToAdd)
     {
-        if(!await _studiosService.CreateStudioAsync(studioToAdd))
+        if(!await _studiosService.AddStudioAsync(studioToAdd))
         {
             return NotFound();
         }

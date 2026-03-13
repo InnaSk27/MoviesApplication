@@ -17,7 +17,10 @@ public class StudiosRepository: IStudiosRepository
     {
         return await _moviesDbContext.Studio.ToListAsync();
     }
-
+    public async Task<Studio?> GetStudioByIdAsync(Guid studioId)
+    {
+        return await _moviesDbContext.Studio.FindAsync(studioId);
+    }
     public async Task<bool> ValidateStudioAsync(string studioName)
     {
         return await _moviesDbContext.Studio.AnyAsync(st => st.Name == studioName);

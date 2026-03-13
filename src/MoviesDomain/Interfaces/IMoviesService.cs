@@ -7,7 +7,7 @@ public interface IMoviesService
 {
     Task<IEnumerable<MovieDto>> GetAllMoviesAsync();
     Task<MovieDto?> GetMovieByIdAsync(Guid movieId);
-    Task<MovieDto?> AddMovieAsync(MovieDto movieId);
+    Task<bool> AddMovieAsync(MovieDto movieDto);
     MovieDto MapToMovieDto(Movie entityMovie);
     Movie MapToMovieEntity(MovieDto entityMovie);
     
