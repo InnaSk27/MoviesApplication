@@ -20,7 +20,6 @@ builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
     .ConfigureContainer<ContainerBuilder>(container =>
     {
-        
         container.RegisterInstance(jwtSettings)
             .As<JwtSettings>()
             .SingleInstance();
@@ -32,6 +31,9 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
         container.RegisterType<MoviesRepository>()
             .As<IMoviesRepository>()
             .SingleInstance();
+
+        container.RegisterType<UsersService>().As<IUsersService>().SingleInstance();
+        container.RegisterType<UsersRepository>().As<IUsersRepository>().SingleInstance();
     });
 
 builder.Services.AddDbContext<MoviesDbContext>(options =>
@@ -55,7 +57,15 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1",
         Description = "API for managing movies"
     });
-
+    
+    
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
        In = ParameterLocation.Header,
@@ -65,15 +75,12 @@ builder.Services.AddSwaggerGen(options =>
        BearerFormat = "JWT",
        Scheme = "Bearer" 
     });
-    
-    // Only include XML comments if the file exists
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    
-    if (File.Exists(xmlPath))
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        options.IncludeXmlComments(xmlPath);
-    }
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
+    });
+
 });
 
 builder.Services.AddAuthentication(options =>
@@ -110,11 +117,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.UseAuthentication();
-
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

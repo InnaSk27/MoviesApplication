@@ -52,7 +52,7 @@ public class MoviesController : ControllerBase
     ///     }
     /// </remarks>
     [HttpPost]
-    // [Authorize]
+    [Authorize]
     public async Task<ActionResult<MovieDto>> AddMovie(MovieDto movieToAdd)
     {
         var movie = await _moviesService.AddMovieAsync(movieToAdd);

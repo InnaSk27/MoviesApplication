@@ -4,16 +4,23 @@ using MoviesDomain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using MoviesInfrastructure;
 using MoviesDomain.Dtos;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using MoviesDomain.JWT;
 
 namespace MoviesApplication.Services;
 
 public class UsersService : IUsersService
 {
     public readonly IUsersRepository _usersRepository;
+    public JwtSettings _jwtSettings;
 
-    public UsersService(IUsersRepository usersRepository)
+    public UsersService(IUsersRepository usersRepository, JwtSettings jwtSettings)
     {
         _usersRepository = usersRepository;
+        _jwtSettings = jwtSettings;
     } 
 
     public async Task<bool> ValidateUserAsync(string username, string password)
@@ -48,5 +55,37 @@ public class UsersService : IUsersService
         };
 
         return await _usersRepository.CreateUserAsync(user);
+    }
+
+    public async Task<UserDto> GetUserByNameAsync(string username)
+    {
+        var user = await _usersRepository.GetUserAsync(username);
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name
+        };
+    }
+
+    public string GenerateToken()
+    {
+        var claims = new[]
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, "testuser"),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey ?? ""));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiryMinutes),
+            signingCredentials: creds
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
